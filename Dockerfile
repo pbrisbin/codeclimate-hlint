@@ -8,6 +8,7 @@ RUN cabal update
 RUN cabal install --dependencies-only
 
 COPY main.hs /usr/src/app/main.hs
+COPY LICENSE /usr/src/app/LICENSE
 RUN cabal build
 
 ENTRYPOINT ["/usr/src/app/dist/build/engine/engine"]
