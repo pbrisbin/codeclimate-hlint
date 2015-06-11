@@ -16,6 +16,8 @@ executable engine
                       , aeson
                       , bytestring
                       , hlint
+                      , text
+                      , haskell-src-exts
 
 source-repository head
   type:                 git
