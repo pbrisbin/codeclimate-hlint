@@ -1,0 +1,22 @@
+name:                   engine
+version:                0.0.0
+author:                 Code Climate <hello@codeclimate.com>
+maintainer:             Code Climate <hello@codeclimate.com>
+license:                MIT
+license-file:           LICENSE
+cabal-version:          >= 1.10
+build-type:             Simple
+
+executable engine
+  default-language:     Haskell2010
+  main-is:              main.hs
+  ghc-options:          -Wall -Werror
+  build-depends:        base
+                      , Glob
+                      , aeson
+                      , bytestring
+                      , hlint
+
+source-repository head
+  type:                 git
+  location:             https://github.com/codeclimate/cc-engine-hlint
