@@ -4,11 +4,15 @@
 module Main where
 
 import Data.Aeson hiding (Result)
+import Data.Char (toLower, toUpper)
 import Data.Text (Text)
+import Data.Maybe (fromMaybe)
+import Data.Monoid ((<>))
 import System.FilePath.Glob
 import Language.Haskell.HLint3
 import Language.Haskell.Exts.SrcLoc
 
+import qualified Data.Map as M
 import qualified Data.ByteString.Lazy as BL
 
 data Result
@@ -31,15 +35,18 @@ instance ToJSON SrcSpan where
 instance ToJSON Result where
     toJSON (Issue Idea{..}) = object
         [ "type" .= ("issue" :: Text)
-        , "check" .= ("HLint/x" :: Text) -- TODO
+        , "check" .= check
         , "description" .= format ideaFrom ideaTo
-        , "categories" .= ["Style" :: Text]
+        , "categories" .= [category]
         , "remediation_points" .= (1000000 :: Int)
         , "location" .= ideaSpan
         ]
       where
         format from Nothing = "Found " ++ show from ++ ", remove it"
         format from (Just to) = "Found " ++ show from ++ ", why not " ++ show to
+
+        check = "HLint/" <> camelize ideaHint
+        category = fromMaybe "Style" $ M.lookup ideaHint categories
 
     toJSON (ModuleFailure _) = object
         [ "type" .= ("warning" :: Text)
@@ -64,3 +71,15 @@ printResult :: Result -> IO ()
 printResult result = do
     BL.putStr $ encode result
     putChar '\0'
+
+-- As we find hints that are non-style we can add entries here. For now it's
+-- empty meaning all will get the default value, "Style"
+categories :: M.Map String Text
+categories = M.empty
+
+camelize :: String -> String
+camelize = concatMap capitalize . words
+
+capitalize :: String -> String
+capitalize [] = []
+capitalize (c:rest) = toUpper c : map toLower rest

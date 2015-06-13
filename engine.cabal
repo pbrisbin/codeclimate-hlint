@@ -15,6 +15,7 @@ executable engine
                       , Glob
                       , aeson
                       , bytestring
+                      , containers
                       , hlint
                       , text
                       , haskell-src-exts
