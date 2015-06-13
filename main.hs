@@ -32,11 +32,14 @@ instance ToJSON Result where
     toJSON (Issue Idea{..}) = object
         [ "type" .= ("issue" :: Text)
         , "check" .= ("HLint/x" :: Text) -- TODO
-        , "description" .= ("hlint issue identified" :: Text)  -- TODO
+        , "description" .= format ideaFrom ideaTo
         , "categories" .= ["Style" :: Text]
         , "remediation_points" .= (1000000 :: Int)
         , "location" .= ideaSpan
         ]
+      where
+        format from Nothing = "Found " ++ show from ++ ", remove it"
+        format from (Just to) = "Found " ++ show from ++ ", why not " ++ show to
 
     toJSON (ModuleFailure _) = object
         [ "type" .= ("warning" :: Text)
