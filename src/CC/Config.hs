@@ -4,11 +4,11 @@ module CC.Config
     , loadConfig
     ) where
 
-import Data.Aeson
+import Data.Aeson (FromJSON(..), (.:), decode, withObject)
 import Data.Maybe (fromMaybe)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy.Encoding (encodeUtf8)
-import System.Directory
+import System.Directory (doesFileExist)
 
 import qualified Data.Text.Lazy.IO as T
 

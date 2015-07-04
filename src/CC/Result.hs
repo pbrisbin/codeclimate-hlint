@@ -4,13 +4,13 @@ module CC.Result
     ( Result(..)
     ) where
 
-import Data.Aeson hiding (Result)
+import Data.Aeson (ToJSON(..), (.=), object)
 import Data.Char (toLower, toUpper)
 import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
 import Data.Text (Text)
-import Language.Haskell.Exts.SrcLoc
-import Language.Haskell.HLint3
+import Language.Haskell.Exts.SrcLoc (SrcSpan(..))
+import Language.Haskell.HLint3 (Idea(..), ParseError)
 
 import qualified Data.Map as M
 
