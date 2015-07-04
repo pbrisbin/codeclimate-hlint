@@ -21,7 +21,10 @@ main = do
         =<< filter included <$> hsFiles
 
 hsFiles :: IO [FilePath]
-hsFiles = concat . fst <$> globDir [compile "**/*.hs"] "."
+hsFiles = map clean . concat . fst <$> globDir [compile "**/*.hs"] "."
+  where
+    clean ('.':'/':x) = x
+    clean x = x
 
 printResult :: Result -> IO ()
 printResult = BL.putStr . (<> "\0") . encode
