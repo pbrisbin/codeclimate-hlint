@@ -7,19 +7,30 @@ license-file:           LICENSE
 cabal-version:          >= 1.10
 build-type:             Simple
 
-executable engine
+library
   default-language:     Haskell2010
-  main-is:              main.hs
+  hs-source-dirs:       src
   ghc-options:          -Wall -Werror
+  exposed-modules:      CC.Config
+                      , CC.Result
   build-depends:        base
-                      , Glob
                       , aeson
-                      , bytestring
                       , containers
                       , hlint
                       , text
                       , haskell-src-exts
 
+executable engine
+  default-language:     Haskell2010
+  main-is:              main.hs
+  ghc-options:          -Wall -Werror
+  build-depends:        base
+                      , engine
+                      , Glob
+                      , aeson
+                      , bytestring
+                      , hlint
+
 source-repository head
   type:                 git
-  location:             https://github.com/codeclimate/cc-engine-hlint
+  location:             https://github.com/codeclimate/codeclimate-hlint
