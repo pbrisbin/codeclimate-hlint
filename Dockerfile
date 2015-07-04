@@ -1,4 +1,5 @@
 FROM haskell:7.10
+MAINTAINER Pat Bribin <pat@codeclimate.com>
 
 RUN useradd -u 9000 -d /home/app -m app
 USER app
