@@ -1,11 +1,23 @@
-# Code Climate HLint engine
-
 Code Climate Engine to run HLint
 
-## Files analyzed
+## Installation
 
-`**/*.hs`
+```
+git clone https://github.com/pbrisbin/codeclimate-hlint
+cd codeclimate-hlint
+docker build -t codeclimate/codeclimate-hlint .
+```
 
-## Configuration
+## Usage
 
-None
+**.codeclimate.yml**
+
+```yml
+engines:
+  hlint:
+    enabled: true
+```
+
+```
+codeclimate analyze --dev
+```
