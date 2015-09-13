@@ -6,6 +6,7 @@ import CC.Config
 import CC.Result
 
 import Data.Aeson (encode)
+import Data.List (isSuffixOf, partition)
 import Data.Monoid ((<>))
 import System.FilePath.Glob (compile, globDir)
 
@@ -13,17 +14,24 @@ import qualified Data.ByteString.Lazy as BL
 
 main :: IO ()
 main = do
-    config <- loadConfig "/config.json"
-    let included = not . (`elem` configExcludes config)
+    sources <- configIncludes <$> loadConfig "/config.json"
 
-    mapM_ printResult
-        =<< analyzeFiles
-        =<< filter included <$> hsFiles
+    mapM_ printResult =<< analyzeFiles =<< hsFiles sources
 
-hsFiles :: IO [FilePath]
-hsFiles = map clean . concat . fst <$> globDir [compile "**/*.hs"] "."
+hsFiles :: [FilePath] -> IO [FilePath]
+hsFiles sources = do
+    let (dirs, files) = partition isDirectory sources
+        patterns = map (compile . (++ "**/*.hs")) dirs
+
+    results <- concat . fst <$> globDir patterns "."
+
+    return $ map clean $ files ++ results
+
   where
-    clean ('.':'/':x) = x
+    isDirectory = ("/" `isSuffixOf`)
+
+    -- TODO: I know where one ./ comes from, but not the other...
+    clean ('.':'/':'.':'/':x) = x
     clean x = x
 
 printResult :: Result -> IO ()

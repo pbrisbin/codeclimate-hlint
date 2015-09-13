@@ -12,11 +12,11 @@ import System.Directory (doesFileExist)
 
 import qualified Data.Text.Lazy.IO as T
 
-data Config = Config { configExcludes :: [FilePath] }
+data Config = Config { configIncludes :: [FilePath] }
 
 instance FromJSON Config where
     parseJSON = withObject "Config" $ \o ->
-        Config <$> o .: "exclude_paths"
+        Config <$> o .: "include_paths"
 
 loadConfig :: FilePath -> IO Config
 loadConfig fp = do
