@@ -2,9 +2,10 @@
 {-# LANGUAGE RecordWildCards #-}
 module CC.Result
     ( Result(..)
+    , printResult
     ) where
 
-import Data.Aeson (ToJSON(..), (.=), object)
+import Data.Aeson (ToJSON(..), (.=), encode, object)
 import Data.Char (toLower, toUpper)
 import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
@@ -12,6 +13,7 @@ import Data.Text (Text)
 import Language.Haskell.Exts.SrcLoc (SrcSpan(..))
 import Language.Haskell.HLint3 (Idea(..), ParseError)
 
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.Map as M
 
 data Position = Position Int Int
@@ -60,6 +62,9 @@ instance ToJSON Result where
     toJSON (ModuleFailure _) = object
         [ "type" .= ("warning" :: Text)
         ]
+
+printResult :: Result -> IO ()
+printResult = BL.putStr . (<> "\0") . encode
 
 -- As we find hints that are non-style we can add entries here. For now it's
 -- empty meaning all will get the default value, "Style"

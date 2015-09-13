@@ -5,8 +5,19 @@ RUN useradd -u 9000 -d /home/app -m app
 USER app
 WORKDIR /home/app
 
-COPY engine.cabal /home/app/engine.cabal
 RUN cabal update
+RUN cabal install \
+  Glob \
+  aeson \
+  aeson \
+  bytestring \
+  containers \
+  directory \
+  haskell-src-exts \
+  hlint \
+  text
+
+COPY engine.cabal /home/app/engine.cabal
 RUN cabal install --dependencies-only
 
 COPY src /home/app/src
