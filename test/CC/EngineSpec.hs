@@ -10,6 +10,7 @@ import CC.Result
 
 import Test.Hspec
 
+import System.Directory (getCurrentDirectory, setCurrentDirectory)
 import System.IO.Temp
 
 import qualified Data.Text as T
@@ -22,7 +23,7 @@ spec :: Spec
 spec = do
     describe "analyzeFiles" $ do
         it "can analyze files" $ do
-            (IssueResult Issue{..}:_) <- withTempDir $ \_ -> do
+            (IssueResult Issue{..}:_) <- withinTempDir $ do
                 T.writeFile "example.hs" $ T.unlines
                     [ "main :: IO ()"
                     , "main = do"
@@ -38,5 +39,11 @@ spec = do
             path `shouldBe` "example.hs"
             (line, column) `shouldBe` (2, 8)
 
-withTempDir :: (FilePath -> IO a) -> IO a
-withTempDir = withSystemTempDirectory "cc-hlint"
+withinTempDir :: IO a -> IO a
+withinTempDir act = withSystemTempDirectory "cc-hlint" $ \tmp -> do
+    -- TODO: exception safety
+    dir <- getCurrentDirectory
+    setCurrentDirectory tmp
+    result <- act
+    setCurrentDirectory dir
+    return $ result
