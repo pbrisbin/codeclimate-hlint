@@ -32,11 +32,11 @@ hsFiles sources = do
 
     results <- concat . fst <$> globDir patterns "."
 
-    return $ map clean $ files ++ results
+    return $ map clean $ filter isHaskell files ++ results
 
   where
     isDirectory = ("/" `isSuffixOf`)
+    isHaskell = (".hs" `isSuffixOf`)
 
-    -- TODO: I know where one ./ comes from, but not the other...
-    clean ('.':'/':'.':'/':x) = x
+    clean ('.':'/':x) = x
     clean x = x

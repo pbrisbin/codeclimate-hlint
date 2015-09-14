@@ -10,9 +10,17 @@ import CC.Result
 
 import Test.Hspec
 
-import System.Directory (getCurrentDirectory, setCurrentDirectory)
-import System.IO.Temp
+import Data.List (sort)
+import Data.Text (Text)
+import System.Directory
+    ( createDirectoryIfMissing
+    , getCurrentDirectory
+    , setCurrentDirectory
+    )
+import System.FilePath (takeDirectory)
+import System.IO.Temp (withSystemTempDirectory)
 
+import qualified Control.Exception as E
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 
@@ -24,7 +32,7 @@ spec = do
     describe "analyzeFiles" $ do
         it "can analyze files" $ do
             (IssueResult Issue{..}:_) <- withinTempDir $ do
-                T.writeFile "example.hs" $ T.unlines
+                createFile "example.hs" $ T.unlines
                     [ "main :: IO ()"
                     , "main = do"
                     , "    print \"redundant do\""
@@ -39,11 +47,31 @@ spec = do
             path `shouldBe` "example.hs"
             (line, column) `shouldBe` (2, 8)
 
+    describe "hsFiles" $ do
+        it "find Haskell files given a list of sources" $ do
+            paths <- withinTempDir $ do
+                createFile "foo.hs" ""
+                createFile "bar.hs" ""
+                createFile "foo/bar.hs" ""
+                createFile "foo/bar/baz.hs" ""
+                createFile "foo/bar/bat.hs" ""
+                createFile "foo/baz/bar.hs" ""
+                createFile "foo/baz/bat.hs" ""
+
+                hsFiles ["foo.rb", "bar.hs", "foo/bar/"]
+
+            sort paths `shouldBe`
+                [ "bar.hs"
+                , "foo/bar/bat.hs"
+                , "foo/bar/baz.hs"
+                ]
+
 withinTempDir :: IO a -> IO a
 withinTempDir act = withSystemTempDirectory "cc-hlint" $ \tmp -> do
-    -- TODO: exception safety
-    dir <- getCurrentDirectory
-    setCurrentDirectory tmp
-    result <- act
-    setCurrentDirectory dir
-    return $ result
+    E.bracket getCurrentDirectory setCurrentDirectory $ \_ ->
+        setCurrentDirectory tmp >> act
+
+createFile :: FilePath -> Text -> IO ()
+createFile path content = do
+    createDirectoryIfMissing True $ takeDirectory path
+    T.writeFile path content
