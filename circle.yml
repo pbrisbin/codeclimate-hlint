@@ -9,6 +9,6 @@ dependencies:
     - stack setup
     - stack build
 
-  test:
-    override:
-      - stack test
+test:
+  override:
+    - stack test
