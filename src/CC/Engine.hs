@@ -21,8 +21,8 @@ analyzeFile fp = do
     (flags, classify, hint) <- autoSettings
 
     either
-        (\e -> [ModuleFailure e])
-        (\m -> map Issue $ applyHints classify hint [m])
+        (\e -> [ErrorResult e])
+        (\m -> map resultFromIdea $ applyHints classify hint [m])
         <$> parseModuleEx flags fp Nothing
 
 hsFiles :: [FilePath] -> IO [FilePath]

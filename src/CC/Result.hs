@@ -2,21 +2,24 @@
 {-# LANGUAGE RecordWildCards #-}
 module CC.Result
     ( Result(..)
-    , printResult
+    , resultFromIdea
+
+    -- Exported for testing
+    , Issue(..)
+    , Location(..)
+    , Position(..)
     ) where
 
-import Data.Aeson (ToJSON(..), (.=), encode, object)
-import Data.Char (toLower, toUpper)
-import Data.Maybe (fromMaybe)
+import Data.Aeson (ToJSON(..), (.=), object)
+import Data.Char (toUpper)
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Language.Haskell.Exts.SrcLoc (SrcSpan(..))
-import Language.Haskell.HLint3 (Idea(..), ParseError)
+import Language.Haskell.HLint3 (Idea(..), Severity(..), ParseError)
 
-import qualified Data.ByteString.Lazy as BL
-import qualified Data.Map as M
+import qualified Data.Text as T
 
-data Position = Position Int Int
+data Position = Position Int Int deriving Show
 
 instance ToJSON Position where
     toJSON (Position line column) = object
@@ -24,7 +27,7 @@ instance ToJSON Position where
         , "column" .= column
         ]
 
-data Location = Location FilePath Position Position
+data Location = Location FilePath Position Position deriving Show
 
 instance ToJSON Location where
     toJSON (Location path begin end) = object
@@ -41,39 +44,87 @@ fromSrcSpan SrcSpan{..} = Location
     (Position srcSpanStartLine srcSpanStartColumn)
     (Position srcSpanEndLine srcSpanEndColumn)
 
-data Result = Issue Idea | ModuleFailure ParseError
+data Result
+    = IssueResult Issue
+    | ErrorResult ParseError
+
+instance Show Result where
+    show (IssueResult issue) = show issue
+    show (ErrorResult _) = "parse error"
+
+data Issue = Issue
+    { issueType :: Text
+    , issueCheckName :: Text
+    , issueDescription :: Text
+    , issueContent :: Text -- TODO: Markdown type
+    , issueCategories :: [Text]
+    , issueLocation :: Location
+    , issueRemediationPoints :: Int
+    }
+    deriving Show
+
+resultFromIdea :: Idea -> Result
+resultFromIdea Idea{..} = IssueResult $ Issue
+    { issueType = "issue"
+    , issueCheckName = "HLint/" <> (T.pack $ camelize ideaHint)
+    , issueDescription = T.pack ideaHint
+    , issueContent = content ideaFrom ideaTo
+    , issueCategories = categories ideaHint
+    , issueLocation = fromSrcSpan ideaSpan
+    , issueRemediationPoints = points ideaSeverity
+    }
+
+  where
+    content from Nothing = T.unlines
+        [ "Found"
+        , ""
+        , "```"
+        , T.pack $ show from
+        , "```"
+        , ""
+        , "remove it."
+        ]
+
+    content from (Just to) = T.unlines
+        [ "Found"
+        , ""
+        , "```"
+        , T.pack $ show from
+        , "```"
+        , ""
+        , "Why not"
+        , ""
+        , "```"
+        , T.pack $ show to
+        , "```"
+        ]
+
+    categories _ = ["Style"]
+
+    points Ignore = 0
+    points Warning = 10000
+    points Error = 50000
 
 instance ToJSON Result where
-    toJSON (Issue Idea{..}) = object
-        [ "type" .= ("issue" :: Text)
-        , "check_name" .= check
-        , "description" .= format ideaFrom ideaTo
-        , "categories" .= [category]
-        , "location" .= fromSrcSpan ideaSpan
-        , "remediation_points" .= (100000 :: Int)
+    toJSON (IssueResult Issue{..}) = object
+        [ "type" .= issueType
+        , "check_name" .= issueCheckName
+        , "description" .= issueDescription
+        , "content" .= object
+            [ "body" .= issueContent
+            ]
+        , "categories" .= issueCategories
+        , "location" .= issueLocation
+        , "remediation_points" .= issueRemediationPoints
         ]
-      where
-        format from Nothing = "Found " ++ show from ++ ", remove it"
-        format from (Just to) = "Found " ++ show from ++ ", why not " ++ show to
 
-        check = "HLint/" <> camelize ideaHint
-        category = fromMaybe "Style" $ M.lookup ideaHint categories
-
-    toJSON (ModuleFailure _) = object
+    toJSON (ErrorResult _) = object
         [ "type" .= ("warning" :: Text)
         ]
-
-printResult :: Result -> IO ()
-printResult = BL.putStr . (<> "\0") . encode
-
--- As we find hints that are non-style we can add entries here. For now it's
--- empty meaning all will get the default value, "Style"
-categories :: M.Map String Text
-categories = M.empty
 
 camelize :: String -> String
 camelize = concatMap capitalize . words
 
 capitalize :: String -> String
 capitalize [] = []
-capitalize (c:rest) = toUpper c : map toLower rest
+capitalize (c:rest) = toUpper c : rest

@@ -31,6 +31,20 @@ executable engine
   ghc-options:          -Wall -Werror
   build-depends:        base
                       , engine
+                      , aeson
+                      , bytestring
+
+Test-Suite spec
+  Type:                 exitcode-stdio-1.0
+  Default-Language:     Haskell2010
+  Hs-Source-Dirs:       test
+  Ghc-Options:          -Wall
+  Main-Is:              Spec.hs
+  Build-Depends:        base
+                      , hspec
+                      , engine
+                      , temporary
+                      , text
 
 source-repository head
   type:                 git
