@@ -21,3 +21,15 @@ engines:
 ```
 codeclimate analyze --dev
 ```
+
+## Development
+
+*Install [stack][]*
+
+[stack]: https://github.com/commercialhaskell/stack
+
+```
+stack setup
+stack build
+stack test
+```
