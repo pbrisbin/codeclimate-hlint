@@ -40,9 +40,12 @@ instance ToJSON Location where
 
 fromSrcSpan :: SrcSpan -> Location
 fromSrcSpan SrcSpan{..} = Location
-    srcSpanFilename
+    (locationFileName srcSpanFilename)
     (Position srcSpanStartLine srcSpanStartColumn)
     (Position srcSpanEndLine srcSpanEndColumn)
+  where
+    locationFileName ('.':'/':x) = x
+    locationFileName x = x
 
 data Result
     = IssueResult Issue
