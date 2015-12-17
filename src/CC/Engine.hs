@@ -21,7 +21,11 @@ analyzeFile fp = do
     (flags, classify, hint) <- autoSettings
 
     either
-        (\e -> [ErrorResult e])
+        -- Returning the error result materializes as a type:warning output not
+        -- yet supported by Platform. CLI ignores it, but codeclimate.com
+        -- errors. For now, we discard the parse failures here.
+        --(\e -> [ErrorResult e])
+        (\_ -> [])
         (\m -> map resultFromIdea $ applyHints classify hint [m])
         <$> parseModuleEx flags fp Nothing
 
