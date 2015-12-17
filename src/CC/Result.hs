@@ -105,8 +105,8 @@ resultFromIdea Idea{..} = IssueResult $ Issue
     categories _ = ["Style"]
 
     points Ignore = 0
-    points Warning = 10000
-    points Error = 50000
+    points Warning = 100 * 1000
+    points Error = 500 * 1000
 
 instance ToJSON Result where
     toJSON (IssueResult Issue{..}) = object
