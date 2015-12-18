@@ -82,7 +82,7 @@ resultFromIdea Idea{..} = IssueResult $ Issue
         [ "Found"
         , ""
         , "```"
-        , T.pack $ show from
+        , T.pack from
         , "```"
         , ""
         , "remove it."
@@ -92,13 +92,13 @@ resultFromIdea Idea{..} = IssueResult $ Issue
         [ "Found"
         , ""
         , "```"
-        , T.pack $ show from
+        , T.pack from
         , "```"
         , ""
         , "Why not"
         , ""
         , "```"
-        , T.pack $ show to
+        , T.pack to
         , "```"
         ]
 
