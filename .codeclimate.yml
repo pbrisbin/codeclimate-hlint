@@ -3,3 +3,7 @@ engines:
     enabled: true
   hlint:
     enabled: true
+
+ratings:
+  paths:
+  - "**.hs"
