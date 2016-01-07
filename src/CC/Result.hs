@@ -67,9 +67,9 @@ data Issue = Issue
     deriving Show
 
 resultFromIdea :: Idea -> Result
-resultFromIdea Idea{..} = IssueResult $ Issue
+resultFromIdea Idea{..} = IssueResult Issue
     { issueType = "issue"
-    , issueCheckName = "HLint/" <> (T.pack $ camelize ideaHint)
+    , issueCheckName = "HLint/" <> T.pack (camelize ideaHint)
     , issueDescription = T.pack ideaHint
     , issueContent = content ideaFrom ideaTo
     , issueCategories = categories ideaHint

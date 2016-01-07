@@ -25,7 +25,7 @@ analyzeFile fp = do
         -- yet supported by Platform. CLI ignores it, but codeclimate.com
         -- errors. For now, we discard the parse failures here.
         --(\e -> [ErrorResult e])
-        (\_ -> [])
+        (const [])
         (\m -> map resultFromIdea $ applyHints classify hint [m])
         <$> parseModuleEx flags fp Nothing
 

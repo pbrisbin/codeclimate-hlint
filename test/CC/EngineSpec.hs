@@ -29,7 +29,7 @@ main = hspec spec
 
 spec :: Spec
 spec = do
-    describe "analyzeFiles" $ do
+    describe "analyzeFiles" $
         it "can analyze files" $ do
             (IssueResult Issue{..}:_) <- withinTempDir $ do
                 createFile "example.hs" $ T.unlines
@@ -47,7 +47,7 @@ spec = do
             path `shouldBe` "example.hs"
             (line, column) `shouldBe` (2, 8)
 
-    describe "hsFiles" $ do
+    describe "hsFiles" $
         it "find Haskell files given a list of sources" $ do
             paths <- withinTempDir $ do
                 createFile "foo.hs" ""
@@ -67,7 +67,7 @@ spec = do
                 ]
 
 withinTempDir :: IO a -> IO a
-withinTempDir act = withSystemTempDirectory "cc-hlint" $ \tmp -> do
+withinTempDir act = withSystemTempDirectory "cc-hlint" $ \tmp ->
     E.bracket getCurrentDirectory setCurrentDirectory $ \_ ->
         setCurrentDirectory tmp >> act
 
