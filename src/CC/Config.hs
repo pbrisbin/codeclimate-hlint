@@ -25,7 +25,10 @@ loadConfig fp = do
         then decodeText <$> T.readFile fp
         else return Nothing
 
-    return $ fromMaybe (Config []) mconfig
+    return $ fromMaybe defaultConfig mconfig
+
+defaultConfig :: Config
+defaultConfig = Config ["./"]
 
 decodeText :: FromJSON a => Text -> Maybe a
 decodeText = decode . encodeUtf8
