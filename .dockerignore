@@ -1,0 +1,11 @@
+*.md
+.codeclimate.yml
+.dockerignore
+.git
+.gitignore
+.stack-work
+Dockerfile
+Makefile
+circle.yml
+tags
+test
