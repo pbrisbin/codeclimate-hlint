@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/pbrisbin/codeclimate-hlint.svg?style=svg)](https://circleci.com/gh/pbrisbin/codeclimate-hlint) [![Code Climate](https://codeclimate.com/github/pbrisbin/codeclimate-hlint/badges/gpa.svg)](https://codeclimate.com/github/pbrisbin/codeclimate-hlint)
+
 Code Climate Engine to run HLint
 
 ## Installation
