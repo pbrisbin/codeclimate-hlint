@@ -18,17 +18,8 @@ import Language.Haskell.HLint3
     , readSettingsFile
     , resolveHints
     )
+import System.Environment (lookupEnv)
 import System.FilePath.Glob (compile, globDir)
-
-hlintDataDir :: Maybe FilePath
-hlintDataDir = Just "/home/app/hlint-src"
-
--- This is basically copy-paste from HLint's autoSettings, but adjusted to look
--- in the correct place for HLint config
-hlintSettings :: IO (ParseFlags, [Classify], Hint)
-hlintSettings = do
-    (fixities, classify, hints) <- findSettings (readSettingsFile hlintDataDir) Nothing
-    return (parseFlagsAddFixities fixities defaultParseFlags, classify, resolveHints hints)
 
 analyzeFiles :: [FilePath] -> IO [Result]
 analyzeFiles = fmap concat . mapM analyzeFile
@@ -45,6 +36,14 @@ analyzeFile fp = do
         (const [])
         (\m -> map resultFromIdea $ applyHints classify hint [m])
         <$> parseModuleEx flags fp Nothing
+
+-- Custom version of @'autoSettings'@ that overrides the HLint data directory
+-- from @HLINT_DATA_DIR@, if found in @ENV@.
+hlintSettings :: IO (ParseFlags, [Classify], Hint)
+hlintSettings = do
+    mdir <- lookupEnv "HLINT_DATA_DIR"
+    (fixities, classify, hints) <- findSettings (readSettingsFile mdir) Nothing
+    return (parseFlagsAddFixities fixities defaultParseFlags, classify, resolveHints hints)
 
 hsFiles :: [FilePath] -> IO [FilePath]
 hsFiles sources = do

@@ -11,4 +11,5 @@ COPY LICENSE /home/app/LICENSE
 VOLUME /code
 WORKDIR /code
 
+ENV HLINT_DATA_DIR /home/app/hlint-src
 ENTRYPOINT ["/home/app/codeclimate-hlint"]
