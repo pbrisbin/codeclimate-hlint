@@ -28,7 +28,7 @@ library
 executable engine
   default-language:     Haskell2010
   main-is:              main.hs
-  ghc-options:          -Wall -Werror
+  ghc-options:          -Wall -Werror -static -optl-static -optl-pthread
   build-depends:        base
                       , engine
                       , aeson
