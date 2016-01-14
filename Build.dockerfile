@@ -21,4 +21,5 @@ RUN cabal install --dependencies-only
 COPY LICENSE /home/app
 COPY src /home/app/src
 COPY main.hs /home/app/main.hs
+RUN cabal configure -fstatic
 RUN cabal build
