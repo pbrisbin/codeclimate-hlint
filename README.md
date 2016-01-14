@@ -7,7 +7,7 @@ Code Climate Engine to run HLint
 ```
 git clone https://github.com/pbrisbin/codeclimate-hlint
 cd codeclimate-hlint
-docker build -t codeclimate/codeclimate-hlint .
+make release
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ engines:
 ```
 
 ```
-codeclimate analyze --dev
+codeclimate analyze
 ```
 
 ## Development
