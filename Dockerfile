@@ -6,7 +6,7 @@ USER app
 WORKDIR /home/app
 
 COPY build/ /home/app/
-COPY LICENSE /home/app/LICENSE
+COPY LICENSE /home/app/
 
 VOLUME /code
 WORKDIR /code
