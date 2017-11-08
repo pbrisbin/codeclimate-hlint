@@ -7,7 +7,6 @@ RUN cabal update
 RUN cabal install \
   Glob \
   aeson \
-  aeson \
   bytestring \
   containers \
   directory \

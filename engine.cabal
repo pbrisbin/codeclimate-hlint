@@ -21,7 +21,6 @@ library
   build-depends:        base
                       , Glob
                       , aeson
-                      , aeson
                       , bytestring
                       , containers
                       , directory
