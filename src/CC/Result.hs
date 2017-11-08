@@ -105,6 +105,7 @@ resultFromIdea Idea{..} = IssueResult Issue
     categories _ = ["Style"]
 
     points Ignore = 0
+    points Suggestion = 0
     points Warning = 100 * 1000
     points Error = 500 * 1000
 
