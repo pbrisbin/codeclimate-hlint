@@ -1,4 +1,4 @@
-FROM haskell:7.10
+FROM haskell:8
 MAINTAINER Pat Bribin <pat@codeclimate.com>
 
 WORKDIR /home/app
