@@ -10,12 +10,12 @@ module CC.Result
     , Position(..)
     ) where
 
-import Data.Aeson (ToJSON(..), (.=), object)
+import Data.Aeson (ToJSON(..), object, (.=))
 import Data.Char (toUpper)
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Language.Haskell.Exts.SrcLoc (SrcSpan(..))
-import Language.Haskell.HLint3 (Idea(..), Severity(..), ParseError)
+import Language.Haskell.HLint3 (Idea(..), ParseError, Severity(..))
 
 import qualified Data.Text as T
 
