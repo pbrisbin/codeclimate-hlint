@@ -7,10 +7,10 @@ import CC.Result
 
 import Data.List (isSuffixOf, partition)
 import Language.Haskell.HLint3
-    ( applyHints
-    , Classify
+    ( Classify
     , Hint
     , ParseFlags
+    , applyHints
     , defaultParseFlags
     , findSettings
     , parseFlagsAddFixities
