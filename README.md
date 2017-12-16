@@ -1,3 +1,7 @@
+**NOTE**: The machinery needed to run HLint as a Code Climate engine was [merged upstream](https://github.com/ndmitchell/hlint/pull/383). Please see [https://github.com/ndmitchell/hlint](https://github.com/ndmitchell/hlint) for details and to report Issues. This project has been archived.
+
+---
+
 [![Circle CI](https://circleci.com/gh/pbrisbin/codeclimate-hlint.svg?style=svg)](https://circleci.com/gh/pbrisbin/codeclimate-hlint) [![Code Climate](https://codeclimate.com/github/pbrisbin/codeclimate-hlint/badges/gpa.svg)](https://codeclimate.com/github/pbrisbin/codeclimate-hlint)
 
 Code Climate Engine to run HLint
